@@ -1,5 +1,5 @@
 require "logger"
-require "saucy/db/sequel"
+require "saucy/db/setup"
 require "uri"
 
 module Saucy

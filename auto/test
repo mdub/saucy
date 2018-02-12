@@ -1,0 +1,5 @@
+#! /bin/bash -eu
+#
+# Operate in development environment
+
+$(dirname $0)/dev rake db:migrate spec

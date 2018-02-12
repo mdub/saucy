@@ -1,0 +1,1 @@
+require "saucy/db/setup"

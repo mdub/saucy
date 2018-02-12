@@ -30,3 +30,6 @@ namespace :db do
   end
 
 end
+
+require "rspec/core/rake_task"
+RSpec::Core::RakeTask.new
