@@ -1,19 +1,28 @@
 require "rspec"
 
 require "saucy/db/event_store"
+require "securerandom"
 
 describe Saucy::DB::EventStore do
 
-  let(:event_store) do
-    Saucy::DB::EventStore.from_url(ENV.fetch("DATABASE_URL"))
+  let(:db) do
+    Sequel.connect(ENV.fetch("DATABASE_URL"))
   end
 
-  context "new stream" do
+  let(:event_store) do
+    Saucy::DB::EventStore.new(db)
+  end
 
-    describe "#get_events_for" do
+  context "a non-extant stream" do
+
+    let(:stream_id) { SecureRandom.uuid }
+
+    describe "#get_commits_on" do
+
       it "returns an empty list" do
-        expect(event_store.get_events_for("whatever").to_a).to eq([])
+        expect(event_store.get_commits_on("whatever").to_a).to eq([])
       end
+
     end
 
   end

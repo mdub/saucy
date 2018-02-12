@@ -9,15 +9,11 @@ module Saucy
     #
     class EventStore
 
-      def self.from_url(database_url)
-        new(Sequel.connect(database_url))
-      end
-
       def initialize(db)
         @db = db
       end
 
-      def get_events_for(stream_id)
+      def get_commits_on(stream_id)
         []
       end
 
