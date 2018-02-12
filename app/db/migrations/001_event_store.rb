@@ -10,6 +10,7 @@ Sequel.migration do
       Integer :version, null: false
       json :data, null: false
       String :source
+      index [:stream_id, :version], unique: true
     end
   end
 
