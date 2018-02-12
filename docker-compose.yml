@@ -4,6 +4,8 @@ services:
 
   db:
     image: postgres:10.2
+    environment:
+      POSTGRES_PASSWORD: fnord
 
   dev:
     image: ruby:2.5
@@ -14,6 +16,15 @@ services:
       - gem-cache:/usr/local/bundle
     working_dir: /work
     command: /bin/bash
+    environment:
+      DATABASE_URL: postgres://postgres:fnord@db/stuff
+
+  psql:
+    image: postgres:10.2
+    depends_on:
+      - db
+    entrypoint: ["psql"]
+    command: postgres://postgres:fnord@db/stuff
 
 volumes:
   gem-cache: ~
