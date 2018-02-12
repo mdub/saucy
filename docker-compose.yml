@@ -17,14 +17,14 @@ services:
     working_dir: /work
     command: /bin/bash
     environment:
-      DATABASE_URL: postgres://postgres:fnord@db/stuff
+      DATABASE_URL: postgres://postgres:fnord@db/saucy
 
   psql:
     image: postgres:10.2
     depends_on:
       - db
     entrypoint: ["psql"]
-    command: postgres://postgres:fnord@db/stuff
+    command: postgres://postgres:fnord@db/postgres
 
 volumes:
   gem-cache: ~
