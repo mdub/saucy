@@ -1,0 +1,19 @@
+version: "3.2"
+
+services:
+
+  db:
+    image: postgres:10.2
+
+  dev:
+    image: ruby:2.5
+    depends_on:
+      - db
+    volumes:
+      - .:/work
+      - gem-cache:/usr/local/bundle
+    working_dir: /work
+    command: /bin/bash
+
+volumes:
+  gem-cache: ~

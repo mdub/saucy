@@ -1,0 +1,8 @@
+#! /bin/bash -eu
+#
+# Operate in development environment
+
+cd $(dirname $0)/..
+
+docker-compose run --rm dev sh -c "bundle check || bundle install"
+docker-compose run --rm dev "${@-bash}"
