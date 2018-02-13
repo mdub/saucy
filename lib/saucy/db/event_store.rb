@@ -33,12 +33,14 @@ module Saucy
         attr_reader :db
         attr_reader :id
 
-        def current_version
-          db[:event_streams].where(:stream_id => id).get(:current_version)
+        def current_version(for_update: false)
+          dataset = db[:event_streams].where(:stream_id => id)
+          dataset = dataset.for_update if for_update
+          dataset.get(:current_version)
         end
 
         def commit(event)
-          version = current_version
+          version = current_version(for_update: true)
           if version
             version += 1
             db[:event_streams].where(:stream_id => id).update(:current_version => version)
