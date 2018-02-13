@@ -1,8 +1,8 @@
 require "spec_helper"
 
-require "saucy/calc"
+require "saucy/calc/model"
 
-describe Saucy::Calc do
+describe Saucy::Calc::Model do
 
   subject(:calc) { described_class.new }
 
