@@ -57,4 +57,32 @@ describe Saucy::DB::EventStore do
 
   end
 
+  context "after committing some events" do
+
+    let(:stream_id) { SecureRandom.uuid }
+
+    let(:events) do
+      [
+        { "type" => "Increment", "by" => 11 },
+        { "type" => "Increment", "by" => 22 },
+        { "type" => "Clear" }
+      ]
+    end
+
+    before do
+      events.each do |event|
+        event_store.commit_event_on(stream_id, event)
+      end
+    end
+
+    describe "#current_version" do
+
+      it "returns the version of the last event" do
+        expect(event_store.current_version_of(stream_id)).to eq(3)
+      end
+
+    end
+
+  end
+
 end

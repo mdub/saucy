@@ -19,16 +19,22 @@ module Saucy
         []
       end
 
+      def current_version_of(stream_id)
+        stream(stream_id).get(:current_version)
+      end
+
       def commit_event_on(stream_id, event)
-        new_version = 1
-        stream = {
-          :stream_id => stream_id,
-          :current_version => new_version
-        }
-        event_streams.insert(stream)
+        version = current_version_of(stream_id)
+        if version
+          version += 1
+          stream(stream_id).update(:current_version => version)
+        else
+          version = 1
+          db[:event_streams].insert(:stream_id => stream_id, :current_version => version)
+        end
         commit = {
           :stream_id => stream_id,
-          :version => 1,
+          :version => version,
           :event => event
         }
         commit
@@ -36,12 +42,12 @@ module Saucy
 
       private
 
-      def event_streams
-        db[:event_streams]
+      def stream(id)
+        db[:event_streams].where(:stream_id => id)
       end
 
-      def event_commits
-        db[:event_commits]
+      def commits(id)
+        db[:event_commits].where(:stream_id => id)
       end
 
     end
