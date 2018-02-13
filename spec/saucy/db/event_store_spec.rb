@@ -1,4 +1,4 @@
-require "rspec"
+require "spec_helper"
 
 require "saucy/db/event_store"
 require "securerandom"
@@ -30,34 +30,17 @@ describe Saucy::DB::EventStore do
 
     let(:stream_id) { SecureRandom.uuid }
 
-    describe "#get_commits_on" do
-
-      it "returns an empty list" do
-        expect(event_store.get_commits_on("whatever").to_a).to eq([])
-      end
-
+    it "has no version" do
+      expect(event_store.current_version_of(stream_id)).to be(nil)
     end
 
-    describe "#commit_event_on" do
-
-      let(:event) { {"foo" => "bar"} }
-
-      let!(:result) { event_store.commit_event_on(stream_id, event) }
-
-      it "adds a row to event_streams" do
-        event_stream_entry = db[:event_streams].where(:stream_id => stream_id).first!
-        expect(event_stream_entry).to include(:stream_id => stream_id, :current_version => 1)
-      end
-
-      it "returns the new version number" do
-        expect(result.fetch(:version)).to eq(1)
-      end
-
+    it "has no commits" do
+      expect(event_store.get_commits_on(stream_id)).to be_empty
     end
 
   end
 
-  context "after committing some events" do
+  context "committing some events" do
 
     let(:stream_id) { SecureRandom.uuid }
 
@@ -69,18 +52,20 @@ describe Saucy::DB::EventStore do
       ]
     end
 
-    before do
-      events.each do |event|
+    let!(:return_values) do
+      events.map do |event|
         event_store.commit_event_on(stream_id, event)
       end
     end
 
-    describe "#current_version" do
+    it "increments the version" do
+      expect(event_store.current_version_of(stream_id)).to be(3)
+    end
 
-      it "returns the version of the last event" do
-        expect(event_store.current_version_of(stream_id)).to eq(3)
-      end
+    let(:commits) { event_store.get_commits_on(stream_id).to_a }
 
+    it "stores events" do
+      expect(commits.map { |c| c.fetch(:event) }).to eq(events)
     end
 
   end

@@ -16,7 +16,10 @@ module Saucy
       attr_reader :db
 
       def get_commits_on(stream_id)
-        []
+        commits(stream_id).order(:version).map do |commit|
+          commit[:event] = JSON.load(commit[:event])
+          commit
+        end
       end
 
       def current_version_of(stream_id)
@@ -32,11 +35,13 @@ module Saucy
           version = 1
           db[:event_streams].insert(:stream_id => stream_id, :current_version => version)
         end
+        event = Sequel.pg_json(event)
         commit = {
           :stream_id => stream_id,
           :version => version,
           :event => event
         }
+        commits(stream_id).insert(:stream_id => stream_id, :version => version, :event => event)
         commit
       end
 
