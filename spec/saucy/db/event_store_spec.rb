@@ -70,4 +70,23 @@ describe Saucy::DB::EventStore do
 
   end
 
+  context "committing events in parallel" do
+
+    before do
+      1.upto(4).map do |thread_number|
+        Thread.new do
+          10.times do |i|
+            event = { "thread" => thread_number, "i" => i }
+            stream.commit(event)
+          end
+        end
+      end.map(&:join)
+    end
+
+    it "works as expected" do
+      expect(stream.current_version).to be(40)
+    end
+
+  end
+
 end

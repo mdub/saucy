@@ -47,6 +47,7 @@ module Saucy
               db[:event_streams].where(:stream_id => id).update(:current_version => version)
             else
               version = 1
+              db[:event_streams].lock(:exclusive)
               db[:event_streams].insert(:stream_id => id, :current_version => version)
             end
             event = Sequel.pg_json(event)
