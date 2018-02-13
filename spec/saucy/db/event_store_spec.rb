@@ -13,6 +13,10 @@ describe Saucy::DB::EventStore do
     Saucy::DB::EventStore.new(db)
   end
 
+  let(:stream_id) { SecureRandom.uuid }
+
+  let(:stream) { event_store[stream_id] }
+
   around(:each) do |example|
     db.transaction do
       example.run
@@ -28,21 +32,17 @@ describe Saucy::DB::EventStore do
 
   context "a non-extant stream" do
 
-    let(:stream_id) { SecureRandom.uuid }
-
     it "has no version" do
-      expect(event_store.current_version_of(stream_id)).to be(nil)
+      expect(stream.current_version).to be(nil)
     end
 
     it "has no commits" do
-      expect(event_store.get_commits_on(stream_id)).to be_empty
+      expect(stream.commits).to be_empty
     end
 
   end
 
   context "committing some events" do
-
-    let(:stream_id) { SecureRandom.uuid }
 
     let(:events) do
       [
@@ -54,15 +54,15 @@ describe Saucy::DB::EventStore do
 
     let!(:return_values) do
       events.map do |event|
-        event_store.commit_event_on(stream_id, event)
+        stream.commit(event)
       end
     end
 
     it "increments the version" do
-      expect(event_store.current_version_of(stream_id)).to be(3)
+      expect(stream.current_version).to be(3)
     end
 
-    let(:commits) { event_store.get_commits_on(stream_id).to_a }
+    let(:commits) { stream.commits.to_a }
 
     it "stores events" do
       expect(commits.map { |c| c.fetch(:event) }).to eq(events)
