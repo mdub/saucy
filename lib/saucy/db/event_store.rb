@@ -40,22 +40,24 @@ module Saucy
         end
 
         def commit(event)
-          version = current_version(for_update: true)
-          if version
-            version += 1
-            db[:event_streams].where(:stream_id => id).update(:current_version => version)
-          else
-            version = 1
-            db[:event_streams].insert(:stream_id => id, :current_version => version)
+          db.transaction do
+            version = current_version(for_update: true)
+            if version
+              version += 1
+              db[:event_streams].where(:stream_id => id).update(:current_version => version)
+            else
+              version = 1
+              db[:event_streams].insert(:stream_id => id, :current_version => version)
+            end
+            event = Sequel.pg_json(event)
+            commit = {
+              :stream_id => id,
+              :version => version,
+              :event => event
+            }
+            db[:event_commits].insert(commit)
+            commit
           end
-          event = Sequel.pg_json(event)
-          commit = {
-            :stream_id => id,
-            :version => version,
-            :event => event
-          }
-          db[:event_commits].insert(commit)
-          commit
         end
 
         def commits

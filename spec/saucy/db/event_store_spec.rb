@@ -17,10 +17,10 @@ describe Saucy::DB::EventStore do
 
   let(:stream) { event_store[stream_id] }
 
-  around(:each) do |example|
+  before(:each) do
     db.transaction do
-      example.run
-      raise Sequel::Rollback
+      db[:event_commits].delete
+      db[:event_streams].delete
     end
   end
 
