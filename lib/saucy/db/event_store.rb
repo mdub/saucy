@@ -36,8 +36,8 @@ module Saucy
         db[:event_streams]
       end
 
-      def events
-        db[:events]
+      def event_commits
+        db[:event_commits]
       end
 
     end
