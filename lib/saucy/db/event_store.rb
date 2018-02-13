@@ -21,11 +21,15 @@ module Saucy
 
       def commit_event_on(stream_id, event)
         new_version = 1
-        event_streams.insert("stream_id" => stream_id, "current_version" => new_version)
+        stream = {
+          :stream_id => stream_id,
+          :current_version => new_version
+        }
+        event_streams.insert(stream)
         commit = {
-          "stream_id" => stream_id,
-          "version" => 1,
-          "event" => event
+          :stream_id => stream_id,
+          :version => 1,
+          :event => event
         }
         commit
       end

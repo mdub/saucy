@@ -50,7 +50,7 @@ describe Saucy::DB::EventStore do
       end
 
       it "returns the new version number" do
-        expect(result.fetch("version")).to eq(1)
+        expect(result.fetch(:version)).to eq(1)
       end
 
     end
