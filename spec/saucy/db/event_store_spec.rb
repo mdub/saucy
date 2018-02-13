@@ -53,9 +53,7 @@ describe Saucy::DB::EventStore do
     end
 
     let!(:return_values) do
-      events.map do |event|
-        stream.commit(event)
-      end
+      stream.commit(*events)
     end
 
     it "increments the version" do

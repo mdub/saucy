@@ -39,25 +39,25 @@ module Saucy
           dataset.get(:current_version)
         end
 
-        def commit(event)
+        def commit(*events)
           db.transaction do
             version = current_version(for_update: true)
-            if version
-              version += 1
-              db[:event_streams].where(:stream_id => id).update(:current_version => version)
-            else
-              version = 1
+            if version.nil?
+              version = 0
               db[:event_streams].lock(:exclusive)
-              db[:event_streams].insert(:stream_id => id, :current_version => version)
+              db[:event_streams].insert(:stream_id => id, :current_version => 0)
             end
-            event = Sequel.pg_json(event)
-            commit = {
-              :stream_id => id,
-              :version => version,
-              :event => event
-            }
-            db[:event_commits].insert(commit)
-            commit
+            commits = events.map do |event|
+              version += 1
+              commit = {
+                :stream_id => id,
+                :version => version,
+                :event => Sequel.pg_json(event)
+              }
+              db[:event_commits].insert_select(commit)
+            end
+            db[:event_streams].where(:stream_id => id).update(:current_version => version)
+            commits
           end
         end
 
