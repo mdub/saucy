@@ -44,7 +44,7 @@ module Saucy
             version = current_version(for_update: true)
             if version.nil?
               version = 0
-              db[:event_streams].lock(:exclusive)
+              db[:event_streams].lock(:exclusive) # Hmmm?
               db[:event_streams].insert(:stream_id => id, :current_version => 0)
             end
             commits = events.map do |event|

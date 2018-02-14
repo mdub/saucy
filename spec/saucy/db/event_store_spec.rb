@@ -83,6 +83,7 @@ describe Saucy::DB::EventStore do
   context "committing events in parallel" do
 
     before do
+      stream.commit
       1.upto(4).map do |thread_number|
         Thread.new do
           10.times do |i|
