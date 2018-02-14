@@ -68,6 +68,18 @@ describe Saucy::DB::EventStore do
 
   end
 
+  context "committing with no events" do
+
+    let!(:return_values) do
+      stream.commit
+    end
+
+    it "sets version to 0" do
+      expect(stream.current_version).to be(0)
+    end
+
+  end
+
   context "committing events in parallel" do
 
     before do
