@@ -1,7 +1,6 @@
 require "spec_helper"
 
 require "saucy/db/event_store"
-require "securerandom"
 
 describe Saucy::DB::EventStore do
 
@@ -13,9 +12,7 @@ describe Saucy::DB::EventStore do
     Saucy::DB::EventStore.new(db)
   end
 
-  let(:stream_id) { SecureRandom.uuid }
-
-  let(:stream) { event_store[stream_id] }
+  let(:stream) { event_store.create_stream }
 
   before(:each) do
     db.transaction do
@@ -30,7 +27,21 @@ describe Saucy::DB::EventStore do
     end
   end
 
+  context "a new stream" do
+
+    it "has version" do
+      expect(stream.current_version).to be(0)
+    end
+
+    it "has no commits" do
+      expect(stream.commits).to be_empty
+    end
+
+  end
+
   context "a non-extant stream" do
+
+    let(:stream) { event_store.stream("whatever") }
 
     it "has no version" do
       expect(stream.current_version).to be(nil)

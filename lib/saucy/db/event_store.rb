@@ -1,5 +1,6 @@
 require "logger"
 require "saucy/db/setup"
+require "securerandom"
 require "uri"
 
 module Saucy
@@ -14,6 +15,10 @@ module Saucy
       end
 
       attr_reader :db
+
+      def create_stream
+        stream(SecureRandom.uuid).create
+      end
 
       def stream(id)
         Stream.new(id: id, db: db)
@@ -33,20 +38,18 @@ module Saucy
         attr_reader :db
         attr_reader :id
 
-        def current_version(for_update: false)
-          dataset = db[:event_streams].where(:stream_id => id)
-          dataset = dataset.for_update if for_update
-          dataset.get(:current_version)
+        def create
+          db[:event_streams].insert(:stream_id => id, :current_version => 0)
+          self
+        end
+
+        def current_version
+          db[:event_streams].where(:stream_id => id).for_update.get(:current_version)
         end
 
         def commit(*events)
           db.transaction do
-            version = current_version(for_update: true)
-            if version.nil?
-              version = 0
-              db[:event_streams].lock(:exclusive) # Hmmm?
-              db[:event_streams].insert(:stream_id => id, :current_version => 0)
-            end
+            version = current_version
             commits = events.map do |event|
               version += 1
               commit = {
