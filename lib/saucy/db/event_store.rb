@@ -1,5 +1,4 @@
 require "logger"
-require "saucy/db/setup"
 require "securerandom"
 require "uri"
 
@@ -66,7 +65,7 @@ module Saucy
 
         def commits
           db[:event_commits].where(:stream_id => id).order(:version).map do |commit|
-            commit[:event] = JSON.load(commit[:event])
+            commit[:event] = commit[:event]
             commit
           end
         end

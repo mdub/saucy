@@ -1,5 +1,5 @@
 require "logger"
-require "saucy/db/setup"
+require "saucy/db/connect"
 require "uri"
 
 module Saucy
@@ -24,7 +24,7 @@ module Saucy
       end
 
       def drop_if_exists
-        Sequel.connect(pg_admin_uri.to_s) do |db|
+        Saucy::DB.connect(pg_admin_uri.to_s) do |db|
           unless db[:pg_database].where(datname: db_name).empty?
             logger.info("Dropping database #{db_name}")
             db.execute "DROP DATABASE #{db_name}"
@@ -33,7 +33,7 @@ module Saucy
       end
 
       def create_unless_exists
-        Sequel.connect(pg_admin_uri.to_s) do |db|
+        Saucy::DB.connect(pg_admin_uri.to_s) do |db|
           if db[:pg_database].where(datname: db_name).empty?
             yield db_name if block_given?
             logger.info("Creating database #{db_name}")
@@ -44,7 +44,8 @@ module Saucy
 
       def migrate(version = nil)
         migration_dir = File.expand_path("../migrations", __FILE__)
-        Sequel.connect(db_uri.to_s) do |db|
+        Sequel.extension :migration
+        Saucy::DB.connect(db_uri.to_s) do |db|
           if version
             logger.info "Migrating to version #{version}"
             Sequel::Migrator.run(db, migration_dir, target: Integer(version))

@@ -1,2 +1,2 @@
 require "pry"
-require "saucy/db/setup"
+require "sequel"

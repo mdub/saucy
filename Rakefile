@@ -27,8 +27,9 @@ namespace :db do
   desc "Open a Sequel console"
   task :console => :exists do
     require "pry"
+    require "saucy/db/manager"
     require "saucy/db/event_store"
-    DB = Sequel.connect(ENV.fetch("DATABASE_URL"))
+    DB = Saucy::DB.connect(ENV.fetch("DATABASE_URL"))
     ES = Saucy::DB::EventStore.new(DB)
     binding.pry
   end

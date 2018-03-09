@@ -1,11 +1,12 @@
 require "spec_helper"
 
+require "saucy/db/connect"
 require "saucy/db/event_store"
 
 describe Saucy::DB::EventStore do
 
   let(:db) do
-    Sequel.connect(ENV.fetch("DATABASE_URL"))
+    Saucy::DB.connect(ENV.fetch("DATABASE_URL"))
   end
 
   let(:event_store) do
