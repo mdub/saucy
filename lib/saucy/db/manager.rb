@@ -35,7 +35,6 @@ module Saucy
       def create_unless_exists
         Saucy::DB.connect(pg_admin_uri.to_s) do |db|
           if db[:pg_database].where(datname: db_name).empty?
-            yield db_name if block_given?
             logger.info("Creating database #{db_name}")
             db.execute "CREATE DATABASE #{db_name}"
           end
