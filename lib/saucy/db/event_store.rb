@@ -54,7 +54,7 @@ module Saucy
               commit = {
                 :stream_id => id,
                 :version => version,
-                :event => Sequel.pg_json(event)
+                :event => Sequel.pg_jsonb(event)
               }
               db[:event_commits].insert_select(commit)
             end
@@ -65,7 +65,7 @@ module Saucy
 
         def commits
           db[:event_commits].where(:stream_id => id).order(:version).map do |commit|
-            commit[:event] = commit[:event]
+            commit[:event] = commit[:event].to_hash
             commit
           end
         end
