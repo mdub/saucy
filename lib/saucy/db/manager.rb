@@ -24,7 +24,7 @@ module Saucy
       end
 
       def drop_if_exists
-        Saucy::DB.connect(pg_admin_uri.to_s) do |db|
+        Sequel.connect(pg_admin_uri.to_s) do |db|
           unless db[:pg_database].where(datname: db_name).empty?
             logger.info("Dropping database #{db_name}")
             db.execute "DROP DATABASE #{db_name}"
@@ -33,7 +33,7 @@ module Saucy
       end
 
       def create_unless_exists
-        Saucy::DB.connect(pg_admin_uri.to_s) do |db|
+        Sequel.connect(pg_admin_uri.to_s) do |db|
           if db[:pg_database].where(datname: db_name).empty?
             logger.info("Creating database #{db_name}")
             db.execute "CREATE DATABASE #{db_name}"
