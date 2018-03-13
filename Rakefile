@@ -39,4 +39,6 @@ end
 require "rspec/core/rake_task"
 RSpec::Core::RakeTask.new
 
+task "spec" => "db:migrate"
+
 task "default" => "spec"
