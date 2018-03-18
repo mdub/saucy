@@ -35,7 +35,10 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.0)
       tilt (~> 2.0)
+    sysrandom (1.0.5)
     tilt (2.0.8)
+    ulid (1.0.0)
+      sysrandom (>= 1.0.0, < 2.0)
 
 PLATFORMS
   ruby
@@ -48,6 +51,7 @@ DEPENDENCIES
   sequel
   sequel_pg
   sinatra
+  ulid
 
 BUNDLED WITH
    1.16.0

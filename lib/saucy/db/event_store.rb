@@ -1,5 +1,5 @@
 require "logger"
-require "securerandom"
+require "ulid"
 require "uri"
 
 module Saucy
@@ -15,8 +15,8 @@ module Saucy
 
       attr_reader :db
 
-      def create_stream
-        stream(SecureRandom.uuid).create
+      def create_stream(id = ULID.generate)
+        stream(id).create
       end
 
       def stream(id)
