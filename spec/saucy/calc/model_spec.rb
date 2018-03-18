@@ -41,4 +41,29 @@ describe Saucy::Calc::Model do
 
   end
 
+  context "with an observer" do
+
+    let(:observed_events) { [] }
+
+    let(:observer) do
+      lambda do |event|
+        observed_events << event
+      end
+    end
+
+    before do
+      calc.add_observer(observer, :call)
+    end
+
+    describe "#add" do
+
+      it "emits an :add event" do
+        calc.add(5)
+        expect(observed_events).to eq([[:add, 5]])
+      end
+
+    end
+
+  end
+
 end

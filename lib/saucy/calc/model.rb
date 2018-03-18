@@ -1,3 +1,4 @@
+require "observer"
 require "saucy/calc/state"
 
 module Saucy
@@ -25,11 +26,14 @@ module Saucy
         apply(:clear)
       end
 
+      include Observable
+
       private
 
       attr_reader :state
 
       def apply(*change)
+        changed; notify_observers(change)
         @state = @state.apply(*change)
       end
 
