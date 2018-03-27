@@ -11,4 +11,5 @@ gem "rake"
 group "test" do
   gem "pry"
   gem "rspec"
+  gem "rack-test"
 end
