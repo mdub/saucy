@@ -16,6 +16,8 @@ services:
       - gem-cache:/usr/local/bundle
     working_dir: /work
     command: /bin/bash
+    ports:
+      - 5000:5000
     environment:
       DATABASE_URL: postgres://postgres:fnord@db/saucy
 

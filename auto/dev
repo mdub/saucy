@@ -4,5 +4,14 @@
 
 cd $(dirname $0)/..
 
+dc_args=()
+
+if [ "$1" = "--service-ports" ]; then
+  dc_args+=($1)
+  shift
+fi
+
+set -x
+
 docker-compose run --rm dev sh -c "bundle check || bundle install"
-docker-compose run --rm dev "${@-bash}"
+docker-compose run --rm ${dc_args[@]} dev "${@-bash}"
