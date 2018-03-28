@@ -16,4 +16,11 @@ describe 'app' do
     end
   end
 
+  describe 'GET /numbers' do
+    it 'returns numbers' do
+      get '/numbers?max=3'
+      expect(last_response.body).to include(%({"count":1}))
+    end
+  end
+
 end
