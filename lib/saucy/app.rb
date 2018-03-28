@@ -2,7 +2,7 @@ require 'json'
 require 'sinatra'
 
 get '/' do
-  'Hello world!'
+  "Hello world!\n"
 end
 
 class Numbers

@@ -12,7 +12,7 @@ describe 'app' do
   describe 'GET /' do
     it 'says hello' do
       get '/'
-      expect(last_response.body).to eq("Hello world!")
+      expect(last_response.body).to eq("Hello world!\n")
     end
   end
 
