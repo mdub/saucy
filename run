@@ -1,0 +1,5 @@
+#! /bin/bash
+#
+# Run the application
+
+exec puma -p ${PORT:-5000}

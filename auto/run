@@ -2,4 +2,4 @@
 #
 # Operate in development environment
 
-$(dirname $0)/dev --service-ports puma -p 5000
+$(dirname $0)/dev --service-ports ./run
