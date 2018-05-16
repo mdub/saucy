@@ -1,4 +1,5 @@
 require 'json'
+require 'logger'
 require 'sinatra'
 
 get '/' do
@@ -7,12 +8,14 @@ end
 
 class Numbers
 
-  def initialize(max)
+  def initialize(max, logger: Logger.new(nil))
     @max = max
+    @logger = logger
   end
 
   def each
     1.upto(@max) do |i|
+      @logger.info("#{object_id} - yielding #{i}")
       data = {
         count: i
       }
@@ -60,7 +63,7 @@ end
 get('/numbers') do
   content_type :json
   max = Integer(params.fetch(:max, 100))
-  stream = Numbers.new(max)
+  stream = Numbers.new(max, logger: logger)
   if delay = params[:delay]
     stream = SlowStream.new(stream, delay)
   end
