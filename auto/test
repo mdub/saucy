@@ -1,5 +1,5 @@
 #! /bin/bash -eu
 #
-# Operate in development environment
+# Run the tests
 
 $(dirname $0)/dev rake db:migrate spec

@@ -1,5 +1,5 @@
 #! /bin/bash -eu
 #
-# Operate in development environment
+# Run the server
 
 $(dirname $0)/dev --service-ports ./run
